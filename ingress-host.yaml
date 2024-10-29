@@ -24,6 +24,13 @@ spec:
             name: tlakomer-be-svc
             port:
               number: 8088
+      - path: /v3/api-docs
+        pathType: Prefix
+        backend:
+          service:
+            name: tlakomer-be-svc
+            port:
+              number: 8088
       - path: /
         pathType: Prefix
         backend:

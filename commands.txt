@@ -6,11 +6,11 @@ gcloud container clusters delete tlakomer-cluster --zone=europe-central2-a
 gcloud container clusters resize tlakomer-cluster --zone=europe-central2-a --num-nodes=0
 
 
-kubectl apply -f c:\!work\projects\PresureSimulator\k8s\tlakomer-app-deployment.yml
+kubectl apply -f c:\!work\projects\PresureSimulator\PresureSimulatork8s\tlakomer-app-deployment.yml
 
-kubectl apply -f c:\!work\projects\PresureSimulator\k8s\ingress-host2.yaml
+kubectl apply -f c:\!work\projects\PresureSimulator\PresureSimulatork8s\ingress-host.yaml
 
-34.111.111.85
+34.111.111.85 - my.tlakomer.com
 
 Docker
 docker system prune -f
