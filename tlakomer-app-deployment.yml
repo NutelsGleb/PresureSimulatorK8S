@@ -1,0 +1,196 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tlakomer-gcp-deployment-db
+  labels:
+    app: postgres-application
+    env: pet
+    owner: nutelsg
+spec:
+  selector:
+    matchLabels:
+      project: tlakomer-db
+  template:
+    metadata:
+      labels:
+        project: tlakomer-db
+    spec:
+      containers:
+        - name: tlakomer-db
+          image: postgres:16.2
+          env:
+            - name: POSTGRES_DB
+              value: presure
+            - name: POSTGRES_USER
+              value: gleb
+            - name: POSTGRES_PASSWORD
+              value: gleb
+          ports: 
+            - containerPort: 5432
+              name: pg
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tlakomer-db-svc
+  labels:
+     env  : pet
+     owner: nutelsg
+spec:
+  selector:
+    project: tlakomer-db      # Selecting PODs with those Labels
+  ports:
+    - name      : pg
+      protocol  : TCP
+      port      : 5432  # Port service
+      targetPort: pg  # Port pod
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tlakomer-gcp-deployment-be
+  labels:
+    app: tlakomer-be
+    env: pet
+    owner: nutelsg
+spec:
+  selector:
+    matchLabels:
+      project: tlakomer-be
+  template:
+    metadata:
+      labels:
+        project: tlakomer-be
+    spec:
+      containers:
+        - name: tlakomer-be
+          image: nutelsg/presuresimulatorbe-presurebe:latest
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://tlakomer-db-svc:5432/presure?currentSchema=public
+            - name: SPRING_DATASOURCE_USERNAME
+              value: gleb
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: gleb
+            - name: CORS_ALLOWED_ORIGINS
+              value: "http://tlakomer-fe-svc,http://34.111.111.85,http://tlakomer.com"
+          ports: 
+            - containerPort: 8088
+              name: ja
+          readinessProbe:
+            httpGet:
+              path: /api/v1/generator
+              port: 8088
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: tlakomer-autoscaling-be
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: tlakomer-gcp-deployment-be
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 78
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 78
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tlakomer-be-svc
+  labels:
+     env  : pet
+     owner: nutelsg
+spec:
+  selector:
+    project: tlakomer-be      # Selecting PODs with those Labels
+  ports:
+    - name      : ja
+      protocol  : TCP
+      port      : 8088  # Port service
+      targetPort: ja  # Port pod
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tlakomer-gcp-deployment-fe
+  labels:
+    app: tlakomer-fe
+    env: pet
+    owner: nutelsg
+spec:
+  selector:
+    matchLabels:
+      project: tlakomer-fe
+  template:
+    metadata:
+      labels:
+        project: tlakomer-fe
+    spec:
+      containers:
+        - name: tlakomer-fe
+          image: nutelsg/presuresimulatorbe-presurefe:latest
+          imagePullPolicy: Always
+          ports: 
+            - containerPort: 80
+              name: ang
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: tlakomer-autoscaling-fe
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: tlakomer-gcp-deployment-fe
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 78
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 78
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tlakomer-fe-svc
+  labels:
+     env  : pet
+     owner: nutelsg
+spec:
+  selector:
+    project: tlakomer-fe      # Selecting PODs with those Labels
+  ports:
+    - name      : ang
+      protocol  : TCP
+      port      : 80  # Port service
+      targetPort: ang  # Port pod
+  type: ClusterIP

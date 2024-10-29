@@ -1,0 +1,20 @@
+
+
+gcloud container clusters create tlakomer-cluster --zone=europe-central2-a --num-nodes=2 --machine-type=e2-small --cluster-version=latest --enable-autoscaling --min-nodes=1 --max-nodes=2
+
+gcloud container clusters delete tlakomer-cluster --zone=europe-central2-a
+gcloud container clusters resize tlakomer-cluster --zone=europe-central2-a --num-nodes=0
+
+
+kubectl apply -f c:\!work\projects\PresureSimulator\k8s\tlakomer-app-deployment.yml
+
+kubectl apply -f c:\!work\projects\PresureSimulator\k8s\ingress-host2.yaml
+
+34.111.111.85
+
+Docker
+docker system prune -f
+
+docker build --no-cache -t presuresimulatorbe-presurefe:latest .
+
+docker tag presuresimulatorbe-presurefe nutelsg/presuresimulatorbe-presurefe:latest
