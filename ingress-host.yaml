@@ -4,10 +4,11 @@ metadata:
   name: tlakomer-ingress
   annotations:
     kubernetes.io/ingress.global-static-ip-name: ingress-externalip
-    #ingress.gcp.kubernetes.io/pre-shared-cert: "<ssl-cert-name>" # для HTTPS, если у вас есть сертификат
+    networking.gke.io/managed-certificates: mcrt-a3be903a-6c57-4037-b049-08f9eb7091e9
+    ingress.gcp.kubernetes.io/force-ssl-redirect: "true"
 spec:
   rules:
-  - host: #tlakomer.com # замените на свой домен
+  - host: tlakomer.com
     http:
       paths:
       - path: /api

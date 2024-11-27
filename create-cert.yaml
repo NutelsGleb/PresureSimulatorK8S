@@ -1,0 +1,9 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: my-tlakomer-cert
+spec:
+  domains:
+    - tlakomer.com  # Замените на ваш домен
+    - www.tlakomer.com
+    - my.tlakomer.com

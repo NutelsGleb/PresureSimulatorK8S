@@ -18,3 +18,9 @@ docker system prune -f
 docker build --no-cache -t presuresimulatorbe-presurefe:latest .
 
 docker tag presuresimulatorbe-presurefe nutelsg/presuresimulatorbe-presurefe:latest
+
+Managed SSL Certificate
+kubectl apply -f c:\!work\projects\PresureSimulator\PresureSimulatork8s\create-cert.yaml
+kubectl describe managedcertificate my-tlakomer-cert
+
+
