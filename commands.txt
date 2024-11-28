@@ -21,6 +21,8 @@ docker tag presuresimulatorbe-presurefe nutelsg/presuresimulatorbe-presurefe:lat
 
 Managed SSL Certificate
 kubectl apply -f c:\!work\projects\PresureSimulator\PresureSimulatork8s\create-cert.yaml
-kubectl describe managedcertificate my-tlakomer-cert
+
+gcloud compute ssl-certificates list
+
 
 

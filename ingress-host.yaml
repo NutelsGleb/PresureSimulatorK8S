@@ -1,10 +1,20 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: my-tlakomer-cert
+spec:
+  domains:
+    - tlakomer.com
+    - www.tlakomer.com
+    - my.tlakomer.com
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: tlakomer-ingress
   annotations:
     kubernetes.io/ingress.global-static-ip-name: ingress-externalip
-    networking.gke.io/managed-certificates: mcrt-a3be903a-6c57-4037-b049-08f9eb7091e9
+    networking.gke.io/managed-certificates: my-tlakomer-cert
     ingress.gcp.kubernetes.io/force-ssl-redirect: "true"
 spec:
   rules:
